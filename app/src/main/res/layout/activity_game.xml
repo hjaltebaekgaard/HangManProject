@@ -8,7 +8,7 @@
     tools:context=".GameActivity">
 
     <ImageView
-        android:id="@+id/imageView"
+        android:id="@+id/nooseImage"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="36dp"
@@ -24,9 +24,9 @@
         android:layout_marginEnd="8dp"
         android:layout_marginStart="36dp"
         android:layout_marginTop="36dp"
-        android:text="TextView"
-        android:textAlignment="center"
-        app:layout_constraintEnd_toStartOf="@+id/imageView"
+        android:text="@string/game_hidden_word"
+        android:gravity="center"
+        app:layout_constraintEnd_toStartOf="@+id/nooseImage"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -45,19 +45,46 @@
         android:layout_marginEnd="16dp"
         android:layout_marginStart="36dp"
         android:ems="10"
-        android:hint="Guess letter"
+        android:hint="@string/game_input_letter"
         android:inputType="text"
         app:layout_constraintBottom_toBottomOf="@+id/confirmLetter"
         app:layout_constraintEnd_toStartOf="@+id/confirmLetter"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/confirmLetter" />
+        app:layout_constraintTop_toTopOf="@+id/confirmLetter"
+        android:autofillHints="" />
 
     <Button
         android:id="@+id/confirmLetter"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="36dp"
-        android:text="Button"
-        app:layout_constraintEnd_toEndOf="@+id/imageView"
-        app:layout_constraintTop_toBottomOf="@+id/imageView" />
+        android:text="@string/game_confirm_button"
+        app:layout_constraintEnd_toEndOf="@+id/nooseImage"
+        app:layout_constraintTop_toBottomOf="@+id/nooseImage" />
+
+    <TextView
+        android:id="@+id/infoText"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="8dp"
+        android:gravity="center"
+        android:text="@string/game_info_text"
+        app:layout_constraintBottom_toTopOf="@+id/guessCount"
+        app:layout_constraintEnd_toStartOf="@+id/nooseImage"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/hiddenWord" />
+
+    <TextView
+        android:id="@+id/guessCount"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
+        android:gravity="center"
+        app:layout_constraintBottom_toBottomOf="@+id/nooseImage"
+        app:layout_constraintEnd_toEndOf="@+id/infoText"
+        app:layout_constraintStart_toStartOf="@+id/infoText"
+        app:layout_constraintTop_toBottomOf="@+id/usedLetters" />
 </android.support.constraint.ConstraintLayout>

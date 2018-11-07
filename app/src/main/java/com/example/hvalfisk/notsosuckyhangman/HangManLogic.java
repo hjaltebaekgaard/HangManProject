@@ -110,7 +110,7 @@ public class HangManLogic {
       letterContained = false;
       System.out.println("Bogstavet var IKKE korrekt: " + letter);
       amountWrongLetters = amountWrongLetters + 1;
-      if (amountWrongLetters > 6) {
+      if (amountWrongLetters > 5) {
         gameLost = true;
       }
     }
@@ -166,4 +166,21 @@ public class HangManLogic {
     System.out.println("possibleWords = " + possibleWords);
     reset();
   }
+
+    public Boolean getLetterContained() {
+      return letterContained;
+    }
+
+    public int getRemainingGuesses() {
+      return 6-amountWrongLetters;
+    }
+
+    public String getUsedLettersString() {
+      String string = "";
+      for (String s: usedLetters) {
+        string = string + s;
+      }
+
+      return string;
+    }
 }

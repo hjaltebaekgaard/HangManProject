@@ -1,4 +1,14 @@
 <resources>
     <string name="app_name">NotSoSuckyHangMan</string>
     <string name="highscores_title">Highscores</string>
+    <string name="highscore_player_name">name</string>
+    <string name="highscore_streak">0</string>
+    <string name="game_confirm_button">Confirm</string>
+    <string name="game_hidden_word">*******</string>
+    <string name="game_input_letter">Guess letter</string>
+    <string name="game_info_text">Welcome to Hang Man</string>
+    <string name="game_text_count">Keep guessing!</string>
+    <string name="game_guesses_remaining">Guesses remaining</string>
+    <string name="clear" />
+    <string name="game_info_text_rerun">Next convict awaits!</string>
 </resources>
