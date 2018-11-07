@@ -142,7 +142,7 @@ public class HangManLogic {
   }
 
 
-  public void getWordFromDR() throws Exception {
+  public void getWordsFromDR() throws Exception {
     String data = getUrl("https://dr.dk");
     //System.out.println("data = " + data);
 
