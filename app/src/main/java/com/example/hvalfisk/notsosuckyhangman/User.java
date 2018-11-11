@@ -23,4 +23,16 @@ public class User {
     public int getHighestStreak() {
         return highestStreak;
     }
+
+    public void setName(String name){
+        this.name = name;
+    }
+
+    public void setCurrentStreak(int currentStreak) {
+        this.currentStreak = currentStreak;
+    }
+
+    public void setHighestStreak(int highestStreak) {
+        this.highestStreak = highestStreak;
+    }
 }

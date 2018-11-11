@@ -12,11 +12,28 @@ public class HighscoreActivity extends AppCompatActivity {
     ArrayList<String> highscoresNameList;
     ArrayList<Integer> highscoresStreakCount;
     ArrayList<User> dummyList;
+    ArrayList<User> highScoreList;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_highscore);
         dummyList = new ArrayList<User>();
+        highScoreList = new ArrayList<User>();
+
+        /*User TheGoat = new User("TheGoat");
+        TheGoat.setHighestStreak(33);
+        User TheFloat = new User("TheFloat");
+        TheFloat.setHighestStreak(1);
+        User TheFloatingGoat = new User("TheFloatingGoat");
+        TheFloatingGoat.setHighestStreak(10);
+
+
+        dummyList.add(TheGoat);
+        dummyList.add(TheFloat);
+        dummyList.add(TheFloatingGoat);
+        */
+
+        /*
         dummyList.add(new User("TheGoat"));
         dummyList.add(new User("TheFloat"));
         dummyList.add(new User("TheFloatingGoat"));
@@ -27,8 +44,16 @@ public class HighscoreActivity extends AppCompatActivity {
         dummyList.add(new User("DarkWingDuck"));
         dummyList.add(new User("Billy"));
         dummyList.add(new User("Foal"));
+        */
+        while(highScoreList.size()<10 && 0<dummyList.size()) {
+            highScoreList.add(getHighestScorer(dummyList));
+        }
 
-        readHighscoreData(dummyList);
+        readHighscoreData(highScoreList);
+    }
+
+    private User getHighestScorer(ArrayList<User> dummyList) {
+        return dummyList.remove(0);
     }
 
 

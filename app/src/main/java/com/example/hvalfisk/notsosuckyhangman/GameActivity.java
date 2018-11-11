@@ -1,21 +1,27 @@
 package com.example.hvalfisk.notsosuckyhangman;
 
 import android.os.AsyncTask;
-import android.os.Build;
-import android.support.annotation.RequiresApi;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.ArraySet;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+
 import java.util.ArrayList;
 
 import static com.example.hvalfisk.notsosuckyhangman.MainActivity.gameLogic;
 
+
 public class GameActivity extends AppCompatActivity implements View.OnClickListener {
+
+    static GameActivity game;
+    static AsyncTaskLoadPlayers asyncLoadPlayers;
+    static AsyncTaskUpdateUser asyncUpdateUser;
+
     Button confirmLetter;
     EditText inputLetter;
     TextView hiddenWord;
@@ -23,6 +29,9 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
     TextView guessCount;
     ImageView nooseImage;
     ArrayList<Integer> nooseImages;
+    ArraySet<String> knownUserNames;
+    User currentUser;
+    String userName;
     boolean prepareRerun;
 
 
@@ -39,28 +48,34 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
         nooseImage = findViewById(R.id.nooseImage);
         prepareRerun = false;
 
+        nooseImages = new ArrayList<Integer>();
+        nooseImages.add(R.drawable.galge);
+        nooseImages.add(R.drawable.forkert1);
+        nooseImages.add(R.drawable.forkert2);
+        nooseImages.add(R.drawable.forkert3);
+        nooseImages.add(R.drawable.forkert4);
+        nooseImages.add(R.drawable.forkert5);
+
+        knownUserNames = new ArraySet<String>();
+
+        userName = getIntent().getStringExtra("playerName");
+
+        game = this;
         /* TODO
             make better async */
         new AsyncTask() {
 
             @Override
             protected Object doInBackground(Object[] objects) {
-                try {
-                    gameLogic.getWordsFromDR();
-                } catch (Exception e) {
-                    System.out.println("boellehat");
-                    e.printStackTrace();
+
+                if (gameLogic.getUsedLetters().size()==0 || gameLogic.isGameFinished()) {
+                    try {
+                        gameLogic.getWordsFromDR();
+                    } catch (Exception e) {
+                        System.out.println("boellehat");
+                        e.printStackTrace();
+                    }
                 }
-
-                nooseImages = new ArrayList<Integer>();
-                nooseImages.add(R.drawable.galge);
-                nooseImages.add(R.drawable.forkert1);
-                nooseImages.add(R.drawable.forkert2);
-                nooseImages.add(R.drawable.forkert3);
-                nooseImages.add(R.drawable.forkert4);
-                nooseImages.add(R.drawable.forkert5);
-
-
                 return null;
             }
 
@@ -68,13 +83,43 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
             protected void onPostExecute(Object o) {
                 super.onPostExecute(o);
 
+                infoText.setText("Welcome " + userName);
                 setConfirmButtonListener();
+
                 hiddenWord.setText(gameLogic.getVisibleWord());
+                if(gameLogic.getUsedLetters().size()!=0) {
+                    guessCount.setText("Guesses remaining: " + gameLogic.getRemainingGuesses());
+                    nooseImage.setImageResource(nooseImages.get(gameLogic.getAmountWrongLetters()));
+                    infoText.setText(gameLogic.getUsedLettersString());
+                }
 
             }
         }.execute();
 
+        if(currentUser==null || !(currentUser.getName().equals(userName))) {
+           asyncLoadPlayers = new AsyncTaskLoadPlayers();
+           asyncLoadPlayers.execute();
+        }
 
+
+    }
+
+    @Override
+    protected void onDestroy() {
+
+        game = null;
+        super.onDestroy();
+    }
+
+
+    private static User getUser(String userName) {
+
+        for(User user:MainActivity.users) {
+            if(user.getName().equals(userName)) {
+                return user;
+            }
+        }
+        return null;
     }
 
     private void setConfirmButtonListener() {
@@ -99,13 +144,23 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
             guessCount.setText("You found the word!");
             nooseImage.setImageResource(R.drawable.medal);
             confirmLetter.setText("Try again");
+            currentUser.setCurrentStreak(currentUser.getCurrentStreak()+1);
+            if(currentUser.getHighestStreak()<currentUser.getCurrentStreak()) {
+                currentUser.setHighestStreak(currentUser.getCurrentStreak());
+            }
             prepareRerun = true;
+            asyncUpdateUser = new AsyncTaskUpdateUser();
+            asyncUpdateUser.execute();
+
         } else if (gameLogic.isGameLost()) {
             guessCount.setText("No pardons this time!");
             nooseImage.setImageResource(R.drawable.forkert6);
             hiddenWord.setText(gameLogic.getWord());
             confirmLetter.setText("Try again");
             prepareRerun = true;
+            currentUser.setCurrentStreak(0);
+            asyncUpdateUser = new AsyncTaskUpdateUser();
+            asyncUpdateUser.execute();
         } else {
             guessCount.setText("Guesses remaining: " + gameLogic.getRemainingGuesses());
             nooseImage.setImageResource(nooseImages.get(gameLogic.getAmountWrongLetters()));
@@ -121,6 +176,33 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
         infoText.setText(R.string.game_info_text_rerun);
         guessCount.setText(R.string.clear);
         prepareRerun = false;
+    }
+
+    private static class AsyncTaskLoadPlayers extends AsyncTask {
+
+        @Override
+        protected Object doInBackground(Object[] objects) {
+            if(MainActivity.knownUsers.contains(game.userName)) {
+                game.currentUser = getUser(game.userName);
+            } else {
+                game.currentUser = new User(game.userName);
+                MainActivity.knownUsers.add(game.userName);
+            }
+
+            return null;
+        }
+    }
+
+    private static class AsyncTaskUpdateUser extends AsyncTask {
+
+        @Override
+        protected Object doInBackground(Object[] objects) {
+
+            MainActivity.users.set(MainActivity.users.indexOf(getUser(game.userName)),game.currentUser);
+
+
+            return null;
+        }
     }
 
 }
