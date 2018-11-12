@@ -29,7 +29,6 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
     TextView guessCount;
     ImageView nooseImage;
     ArrayList<Integer> nooseImages;
-    ArraySet<String> knownUserNames;
     User currentUser;
     String userName;
     boolean prepareRerun;
@@ -56,13 +55,12 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
         nooseImages.add(R.drawable.forkert4);
         nooseImages.add(R.drawable.forkert5);
 
-        knownUserNames = new ArraySet<String>();
 
         userName = getIntent().getStringExtra("playerName");
 
         game = this;
-        /* TODO
-            make better async */
+
+
         new AsyncTask() {
 
             @Override
@@ -97,11 +95,12 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
         }.execute();
 
         if(currentUser==null || !(currentUser.getName().equals(userName))) {
+
            asyncLoadPlayers = new AsyncTaskLoadPlayers();
            asyncLoadPlayers.execute();
         }
 
-
+        System.out.println("onCreate is done");
     }
 
     @Override
@@ -121,6 +120,16 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
         }
         return null;
     }
+    private static int getUserIndex(String userName) {
+        int index = 0;
+        for(User user: MainActivity.users) {
+            if(user.getName().equals(userName)) {
+                index = MainActivity.users.indexOf(user);
+            }
+        }
+        return index;
+
+    }
 
     private void setConfirmButtonListener() {
         confirmLetter.setOnClickListener(this);
@@ -133,6 +142,8 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
         inputLetter.setText("");
         hiddenWord.setText(gameLogic.getVisibleWord());
         infoText.setText(gameLogic.getUsedLettersString());
+
+        System.out.println("user array has size: "+MainActivity.users.size());
 
         if(prepareRerun) {
             reRun();
@@ -182,11 +193,14 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
 
         @Override
         protected Object doInBackground(Object[] objects) {
-            if(MainActivity.knownUsers.contains(game.userName)) {
+            if(MainActivity.knownUsersList.contains(game.userName)) {
+                System.out.println("contained username");
                 game.currentUser = getUser(game.userName);
             } else {
+                System.out.println("did not contain username");
                 game.currentUser = new User(game.userName);
-                MainActivity.knownUsers.add(game.userName);
+                MainActivity.knownUsersList.add(game.userName);
+                MainActivity.users.add(game.currentUser);
             }
 
             return null;
@@ -198,11 +212,12 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
         @Override
         protected Object doInBackground(Object[] objects) {
 
-            MainActivity.users.set(MainActivity.users.indexOf(getUser(game.userName)),game.currentUser);
-
+            MainActivity.users.set(getUserIndex(game.userName),game.currentUser);
 
             return null;
         }
+
+
     }
 
 }

@@ -17,49 +17,33 @@ public class HighscoreActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_highscore);
-        dummyList = new ArrayList<User>();
+        dummyList = MainActivity.users;
+        System.out.println("dummylist has size: "+dummyList.size());
         highScoreList = new ArrayList<User>();
 
-        /*User TheGoat = new User("TheGoat");
-        TheGoat.setHighestStreak(33);
-        User TheFloat = new User("TheFloat");
-        TheFloat.setHighestStreak(1);
-        User TheFloatingGoat = new User("TheFloatingGoat");
-        TheFloatingGoat.setHighestStreak(10);
-
-
-        dummyList.add(TheGoat);
-        dummyList.add(TheFloat);
-        dummyList.add(TheFloatingGoat);
-        */
-
-        /*
-        dummyList.add(new User("TheGoat"));
-        dummyList.add(new User("TheFloat"));
-        dummyList.add(new User("TheFloatingGoat"));
-        dummyList.add(new User("TheGoatingFloat"));
-        dummyList.add(new User("TheLoafingGoat"));
-        dummyList.add(new User("QueenElizabeth"));
-        dummyList.add(new User("RogerFederer"));
-        dummyList.add(new User("DarkWingDuck"));
-        dummyList.add(new User("Billy"));
-        dummyList.add(new User("Foal"));
-        */
         while(highScoreList.size()<10 && 0<dummyList.size()) {
+            System.out.println("dummylist has size: "+dummyList.size());
             highScoreList.add(getHighestScorer(dummyList));
+            System.out.println("dummylist has size: "+dummyList.size());
+            System.out.println("highscorelist has size: "+highScoreList.size());
         }
 
         readHighscoreData(highScoreList);
     }
 
     private User getHighestScorer(ArrayList<User> dummyList) {
-        return dummyList.remove(0);
+        User highestScoringUser = new User("dummyUser");
+        int index = -1;
+        for(User user:dummyList) {
+            if(user.getHighestStreak()>=highestScoringUser.getHighestStreak()) {
+                highestScoringUser = user;
+                ++index;
+            }
+        }
+        System.out.println("dummylist indexof: "+dummyList.indexOf(highestScoringUser));
+        return dummyList.remove(index);
     }
-
-
-    /* TODO
-        make sorting
-    */
+    
     private void readHighscoreData(ArrayList<User> users) {
 
         highscoresNameList = new ArrayList<String>();
