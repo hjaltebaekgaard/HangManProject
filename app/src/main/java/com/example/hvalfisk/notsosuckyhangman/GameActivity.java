@@ -69,7 +69,7 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
         userName = getIntent().getStringExtra("playerName");
 
         game = this;
-        if(users==null) {
+        if(users==null || users.size()!=knownUsersList.size() || currentUser==null) {
             loadUserData();
         }
 
@@ -126,6 +126,10 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
 
     private static User getUser(String userName) {
 
+        System.out.println("getUser visit");
+        for(User user:users) {
+            System.out.println("getUser: "+user.getName());
+        }
         for(User user:users) {
             if(user.getName().equals(userName)) {
                 return user;
@@ -222,11 +226,6 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
         System.out.println("loadData json "+json);
         Type type = new TypeToken<ArrayList<User>>() {}.getType();
         users = gson.fromJson(json,type);
-        if(users.size()>0) {
-            System.out.println("loadData username:"+users.get(0).getName());
-        }
-        System.out.println("loadData users: "+users.size()+" username:");
-
 
         if(users==null) {
             users = new ArrayList<>();
@@ -241,7 +240,7 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
             System.out.println("Am I called "+knownUsersList.size());
         }
         editor.putString(KNOWN_USERS,buildString(knownUsersList));
-
+        System.out.println();
         Gson gson = new Gson();
         String json = gson.toJson(users);
         System.out.println("saveData json: "+json);
