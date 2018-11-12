@@ -33,15 +33,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        System.out.println("entered onCreate MainActivity");
         gameLogic = new HangManLogic();
         setContentView(R.layout.activity_main);
-
-        saveUserData();
-        loadUserData();
-        for(User user:users) {
-            System.out.println(user.getName());
-        }
-
 
         playerName = findViewById(R.id.userName);
         newGame = findViewById(R.id.newGame);
@@ -62,9 +57,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     private void saveUserData() {
+        System.out.println("saveUserData was called");
         SharedPreferences sharedPreferences = getSharedPreferences(SHARED_PREFERENCES,MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
-
+        System.out.println("Am I called "+buildString(knownUsersList));
+        if(knownUsersList!=null) {
+            System.out.println("Am I called "+knownUsersList.size());
+        }
         editor.putString(KNOWN_USERS,buildString(knownUsersList));
 
         Gson gson = new Gson();
@@ -78,36 +77,16 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         if(knownUsersList!=null) {
             StringBuilder stringBuilder = new StringBuilder();
+            System.out.println("stringbuilder length: "+stringBuilder.length());
             for (String userName : knownUsersList) {
                 stringBuilder.append(userName);
                 stringBuilder.append(",");
             }
             return stringBuilder.toString();
         }
-        return "";
+        return null;
     }
 
-    private void loadUserData() {
-        SharedPreferences sharedPreferences = getSharedPreferences(SHARED_PREFERENCES,MODE_PRIVATE);
-        if(knownUsersList==null) {
-            knownUsersList = new ArrayList<String>();
-        }
-        String names = sharedPreferences.getString(KNOWN_USERS, "");
-        System.out.println(names);
-        String[] knownUsersTemp = names.split(",");
-        for(String userName:knownUsersTemp) {
-            knownUsersList.add(userName);
-        }
-
-        Gson gson = new Gson();
-        String json = sharedPreferences.getString(USERS,null);
-        Type type = new TypeToken<ArrayList<User>>() {}.getType();
-        users = gson.fromJson(json,type);
-
-        if(users==null) {
-            users = new ArrayList<>();
-        }
-    }
 
     @Override
     public void onClick(View v) {

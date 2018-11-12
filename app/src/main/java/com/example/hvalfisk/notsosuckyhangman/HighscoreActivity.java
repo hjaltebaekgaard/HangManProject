@@ -17,18 +17,20 @@ public class HighscoreActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_highscore);
-        dummyList = MainActivity.users;
-        System.out.println("dummylist has size: "+dummyList.size());
-        highScoreList = new ArrayList<User>();
+        if(!(MainActivity.users==null)) {
+            dummyList = MainActivity.users;
+//        System.out.println("dummylist has size: "+dummyList.size());
+            highScoreList = new ArrayList<User>();
 
-        while(highScoreList.size()<10 && 0<dummyList.size()) {
-            System.out.println("dummylist has size: "+dummyList.size());
-            highScoreList.add(getHighestScorer(dummyList));
-            System.out.println("dummylist has size: "+dummyList.size());
-            System.out.println("highscorelist has size: "+highScoreList.size());
+            while (highScoreList.size() < 10 && 0 < dummyList.size()) {
+                //          System.out.println("dummylist has size: "+dummyList.size());
+                highScoreList.add(getHighestScorer(dummyList));
+                //System.out.println("dummylist has size: "+dummyList.size());
+                //System.out.println("highscorelist has size: "+highScoreList.size());
+            }
+
+            readHighscoreData(highScoreList);
         }
-
-        readHighscoreData(highScoreList);
     }
 
     private User getHighestScorer(ArrayList<User> dummyList) {
@@ -43,7 +45,7 @@ public class HighscoreActivity extends AppCompatActivity {
         System.out.println("dummylist indexof: "+dummyList.indexOf(highestScoringUser));
         return dummyList.remove(index);
     }
-    
+
     private void readHighscoreData(ArrayList<User> users) {
 
         highscoresNameList = new ArrayList<String>();

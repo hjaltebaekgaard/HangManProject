@@ -1,5 +1,6 @@
 package com.example.hvalfisk.notsosuckyhangman;
 
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -11,9 +12,18 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 
+import static com.example.hvalfisk.notsosuckyhangman.MainActivity.KNOWN_USERS;
+import static com.example.hvalfisk.notsosuckyhangman.MainActivity.SHARED_PREFERENCES;
+import static com.example.hvalfisk.notsosuckyhangman.MainActivity.USERS;
 import static com.example.hvalfisk.notsosuckyhangman.MainActivity.gameLogic;
+import static com.example.hvalfisk.notsosuckyhangman.MainActivity.knownUsersList;
+import static com.example.hvalfisk.notsosuckyhangman.MainActivity.users;
 
 
 public class GameActivity extends AppCompatActivity implements View.OnClickListener {
@@ -59,6 +69,9 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
         userName = getIntent().getStringExtra("playerName");
 
         game = this;
+        if(users==null) {
+            loadUserData();
+        }
 
 
         new AsyncTask() {
@@ -105,7 +118,7 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
 
     @Override
     protected void onDestroy() {
-
+        saveUserData();
         game = null;
         super.onDestroy();
     }
@@ -113,7 +126,7 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
 
     private static User getUser(String userName) {
 
-        for(User user:MainActivity.users) {
+        for(User user:users) {
             if(user.getName().equals(userName)) {
                 return user;
             }
@@ -122,9 +135,9 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
     }
     private static int getUserIndex(String userName) {
         int index = 0;
-        for(User user: MainActivity.users) {
+        for(User user: users) {
             if(user.getName().equals(userName)) {
-                index = MainActivity.users.indexOf(user);
+                index = users.indexOf(user);
             }
         }
         return index;
@@ -143,7 +156,7 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
         hiddenWord.setText(gameLogic.getVisibleWord());
         infoText.setText(gameLogic.getUsedLettersString());
 
-        System.out.println("user array has size: "+MainActivity.users.size());
+        System.out.println("user array has size: "+users.size());
 
         if(prepareRerun) {
             reRun();
@@ -189,18 +202,76 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
         prepareRerun = false;
     }
 
+    void loadUserData() {
+        SharedPreferences sharedPreferences = getSharedPreferences(SHARED_PREFERENCES,MODE_PRIVATE);
+        if(MainActivity.knownUsersList==null) {
+            MainActivity.knownUsersList = new ArrayList<String>();
+        }
+        String names = sharedPreferences.getString(KNOWN_USERS, null);
+        System.out.println(names);
+        if(names!=null) {
+            String[] knownUsersTemp = names.split(",");
+            for (String userName : knownUsersTemp) {
+                if(!(MainActivity.knownUsersList.contains(userName)&&userName.length()>0)) {
+                    MainActivity.knownUsersList.add(userName);
+                }
+            }
+        }
+        Gson gson = new Gson();
+        String json = sharedPreferences.getString(USERS,null);
+        Type type = new TypeToken<ArrayList<User>>() {}.getType();
+        users = gson.fromJson(json,type);
+
+        if(users==null) {
+            users = new ArrayList<>();
+        }
+    }
+    private void saveUserData() {
+        System.out.println("saveUserData was called in GameActivity");
+        SharedPreferences sharedPreferences = getSharedPreferences(SHARED_PREFERENCES,MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        System.out.println("Am I called "+buildString(knownUsersList));
+        if(knownUsersList!=null) {
+            System.out.println("Am I called "+knownUsersList.size());
+        }
+        editor.putString(KNOWN_USERS,buildString(knownUsersList));
+
+        Gson gson = new Gson();
+        String json = gson.toJson(users);
+        editor.putString(USERS,json);
+
+        editor.apply();
+    }
+    private String buildString(ArrayList<String> knownUsersList) {
+
+        if(knownUsersList!=null) {
+            StringBuilder stringBuilder = new StringBuilder();
+            System.out.println("stringbuilder length: "+stringBuilder.length());
+            for (String userName : knownUsersList) {
+                stringBuilder.append(userName);
+                stringBuilder.append(",");
+            }
+            return stringBuilder.toString();
+        }
+        return null;
+    }
+
     private static class AsyncTaskLoadPlayers extends AsyncTask {
 
         @Override
         protected Object doInBackground(Object[] objects) {
+
             if(MainActivity.knownUsersList.contains(game.userName)) {
                 System.out.println("contained username");
                 game.currentUser = getUser(game.userName);
             } else {
-                System.out.println("did not contain username");
+                System.out.println("did not contain username: " + game.userName);
+                System.out.println("did not, but did: "+knownUsersList.size()+" "+users.size());
                 game.currentUser = new User(game.userName);
+                System.out.println("did not, but did: "+game.currentUser.getName());
                 MainActivity.knownUsersList.add(game.userName);
-                MainActivity.users.add(game.currentUser);
+                users.add(game.currentUser);
+                System.out.println("did not, but did: "+knownUsersList.size()+" "+users.size());
             }
 
             return null;
@@ -212,7 +283,7 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
         @Override
         protected Object doInBackground(Object[] objects) {
 
-            MainActivity.users.set(getUserIndex(game.userName),game.currentUser);
+            users.set(getUserIndex(game.userName),game.currentUser);
 
             return null;
         }
