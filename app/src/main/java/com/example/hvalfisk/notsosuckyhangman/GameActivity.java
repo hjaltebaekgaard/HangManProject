@@ -219,8 +219,14 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
         }
         Gson gson = new Gson();
         String json = sharedPreferences.getString(USERS,null);
+        System.out.println("loadData json "+json);
         Type type = new TypeToken<ArrayList<User>>() {}.getType();
         users = gson.fromJson(json,type);
+        if(users.size()>0) {
+            System.out.println("loadData username:"+users.get(0).getName());
+        }
+        System.out.println("loadData users: "+users.size()+" username:");
+
 
         if(users==null) {
             users = new ArrayList<>();
@@ -238,6 +244,7 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
 
         Gson gson = new Gson();
         String json = gson.toJson(users);
+        System.out.println("saveData json: "+json);
         editor.putString(USERS,json);
 
         editor.apply();
