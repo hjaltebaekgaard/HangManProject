@@ -18,7 +18,10 @@ public class HighscoreActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_highscore);
         if(!(MainActivity.users==null)) {
-            dummyList = MainActivity.users;
+            dummyList = new ArrayList<>();
+            for(User user: MainActivity.users) {
+                dummyList.add(user);
+            }
 //        System.out.println("dummylist has size: "+dummyList.size());
             highScoreList = new ArrayList<User>();
 
