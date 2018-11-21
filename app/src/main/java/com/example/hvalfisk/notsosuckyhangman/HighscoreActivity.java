@@ -33,6 +33,9 @@ public class HighscoreActivity extends AppCompatActivity {
             }
 
             readHighscoreData(highScoreList);
+            if(MainActivity.users.size()==0) {
+                System.out.println("DEBUG: somethings wrong with highscore");
+            }
         }
     }
 

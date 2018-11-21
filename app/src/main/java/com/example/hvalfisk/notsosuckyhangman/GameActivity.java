@@ -69,7 +69,10 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
         userName = getIntent().getStringExtra("playerName");
 
         game = this;
-        if(users==null || users.size()!=knownUsersList.size() || currentUser==null) {
+        if(users==null || users.size()!=knownUsersList.size()) {
+            if(!(users==null && knownUsersList==null)) {
+                System.out.println("DEBUG: " + users.size() + " " + knownUsersList.size());
+            }
             loadUserData();
         }
 
@@ -207,6 +210,7 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     void loadUserData() {
+        System.out.println("DEBUG: loadUserData() begin");
         SharedPreferences sharedPreferences = getSharedPreferences(SHARED_PREFERENCES,MODE_PRIVATE);
         if(MainActivity.knownUsersList==null) {
             MainActivity.knownUsersList = new ArrayList<String>();
