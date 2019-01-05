@@ -18,12 +18,13 @@ import com.google.gson.reflect.TypeToken;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 
-import static com.example.hvalfisk.notsosuckyhangman.MainActivity.KNOWN_USERS;
-import static com.example.hvalfisk.notsosuckyhangman.MainActivity.SHARED_PREFERENCES;
-import static com.example.hvalfisk.notsosuckyhangman.MainActivity.USERS;
-import static com.example.hvalfisk.notsosuckyhangman.MainActivity.gameLogic;
-import static com.example.hvalfisk.notsosuckyhangman.MainActivity.knownUsersList;
-import static com.example.hvalfisk.notsosuckyhangman.MainActivity.users;
+import static com.example.hvalfisk.notsosuckyhangman.HangManApplication.KNOWN_USERS;
+import static com.example.hvalfisk.notsosuckyhangman.HangManApplication.SHARED_PREFERENCES;
+import static com.example.hvalfisk.notsosuckyhangman.HangManApplication.USERS;
+import static com.example.hvalfisk.notsosuckyhangman.HangManApplication.gameLogic;
+import static com.example.hvalfisk.notsosuckyhangman.HangManApplication.knownUsersList;
+import static com.example.hvalfisk.notsosuckyhangman.HangManApplication.users;
+
 
 
 public class GameActivity extends AppCompatActivity implements View.OnClickListener {
@@ -48,6 +49,8 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_game);
+
+        System.out.println("DEBUG: entered onCreate in GameActivity");
 
         hiddenWord = findViewById(R.id.hiddenWord);
         inputLetter = findViewById(R.id.inputLetter);
@@ -212,16 +215,17 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
     void loadUserData() {
         System.out.println("DEBUG: loadUserData() begin");
         SharedPreferences sharedPreferences = getSharedPreferences(SHARED_PREFERENCES,MODE_PRIVATE);
-        if(MainActivity.knownUsersList==null) {
-            MainActivity.knownUsersList = new ArrayList<String>();
+        System.out.println("DEBUG: whaat");
+        if(knownUsersList==null) {
+            knownUsersList = new ArrayList<String>();
         }
         String names = sharedPreferences.getString(KNOWN_USERS, null);
         System.out.println(names);
         if(names!=null) {
             String[] knownUsersTemp = names.split(",");
             for (String userName : knownUsersTemp) {
-                if(!(MainActivity.knownUsersList.contains(userName)&&userName.length()>0)) {
-                    MainActivity.knownUsersList.add(userName);
+                if(!(knownUsersList.contains(userName)&&userName.length()>0)) {
+                    knownUsersList.add(userName);
                 }
             }
         }
@@ -234,6 +238,7 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
         if(users==null) {
             users = new ArrayList<>();
         }
+        System.out.println("DEBUG: whaat igen");
     }
     private void saveUserData() {
         System.out.println("saveUserData was called in GameActivity");
@@ -271,7 +276,7 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
         @Override
         protected Object doInBackground(Object[] objects) {
 
-            if(MainActivity.knownUsersList.contains(game.userName)) {
+            if(knownUsersList.contains(game.userName)) {
                 System.out.println("contained username");
                 game.currentUser = getUser(game.userName);
             } else {
@@ -279,7 +284,7 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
                 System.out.println("did not, but did: "+knownUsersList.size()+" "+users.size());
                 game.currentUser = new User(game.userName);
                 System.out.println("did not, but did: "+game.currentUser.getName());
-                MainActivity.knownUsersList.add(game.userName);
+                knownUsersList.add(game.userName);
                 users.add(game.currentUser);
                 System.out.println("did not, but did: "+knownUsersList.size()+" "+users.size());
             }

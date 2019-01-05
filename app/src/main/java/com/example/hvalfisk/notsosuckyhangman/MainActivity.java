@@ -16,21 +16,23 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private Button newGame;
     private Button instructions;
     private Button highscores;
-    public static HangManLogic gameLogic;
+   /* public static HangManLogic gameLogic;
     public static ArrayList<String> knownUsersList;
     public static ArrayList<User> users;
+*/
 
+   /*
     public static final String SHARED_PREFERENCES = "sharedPreferences";
     public static final String KNOWN_USERS = "knownUserNames";
     public static final String USERS = "users";
-
+*/
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         System.out.println("entered onCreate MainActivity");
-        gameLogic = new HangManLogic();
+        //gameLogic = new HangManLogic();
         setContentView(R.layout.activity_main);
 
         playerName = findViewById(R.id.userName);

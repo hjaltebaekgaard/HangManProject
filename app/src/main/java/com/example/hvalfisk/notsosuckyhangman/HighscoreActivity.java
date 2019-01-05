@@ -7,6 +7,8 @@ import android.support.v7.widget.RecyclerView;
 
 import java.util.ArrayList;
 
+import static com.example.hvalfisk.notsosuckyhangman.HangManApplication.users;
+
 public class HighscoreActivity extends AppCompatActivity {
 
     ArrayList<String> highscoresNameList;
@@ -17,9 +19,9 @@ public class HighscoreActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_highscore);
-        if(!(MainActivity.users==null)) {
+        if(!(users==null)) {
             dummyList = new ArrayList<>();
-            for(User user: MainActivity.users) {
+            for(User user: users) {
                 dummyList.add(user);
             }
 //        System.out.println("dummylist has size: "+dummyList.size());
@@ -33,7 +35,7 @@ public class HighscoreActivity extends AppCompatActivity {
             }
 
             readHighscoreData(highScoreList);
-            if(MainActivity.users.size()==0) {
+            if(users.size()==0) {
                 System.out.println("DEBUG: somethings wrong with highscore");
             }
         }
