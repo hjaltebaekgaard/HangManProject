@@ -1,21 +1,26 @@
 package com.example.hvalfisk.notsosuckyhangman;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Spinner;
 
 import java.util.ArrayList;
 
-public class MainActivity extends AppCompatActivity implements View.OnClickListener {
+public class MainActivity extends AppCompatActivity implements View.OnClickListener, AdapterView.OnItemSelectedListener {
 
     private EditText playerName;
     private Button newGame;
     private Button instructions;
     private Button highscores;
+    private Spinner knownUsersSelection;
    /* public static HangManLogic gameLogic;
     public static ArrayList<String> knownUsersList;
     public static ArrayList<User> users;
@@ -39,6 +44,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         newGame = findViewById(R.id.newGame);
         instructions = findViewById(R.id.instructions);
         highscores = findViewById(R.id.highscore);
+
+        knownUsersSelection = findViewById(R.id.spinnerKnownUser);
+
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, HangManApplication.knownUsersList);
+        knownUsersSelection.setAdapter(adapter);
+        knownUsersSelection.setOnItemSelectedListener(this);
 
         newGame.setOnClickListener(this);
         instructions.setOnClickListener(this);
@@ -75,6 +86,18 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             default:
 
         }
+
+    }
+
+    @Override
+    public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+
+        System.out.println("DEBUG: itemSelected");
+        playerName.setText(String.format("%s", adapterView.getItemAtPosition(i)));
+    }
+
+    @Override
+    public void onNothingSelected(AdapterView<?> adapterView) {
 
     }
 }
