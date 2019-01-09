@@ -1,5 +1,6 @@
 package com.example.hvalfisk.notsosuckyhangman;
 
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
@@ -72,6 +73,11 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
         userName = getIntent().getStringExtra("playerName");
 
         game = this;
+
+        if(savedInstanceState==null) {
+            gameLogic.reset();
+        }
+
         if(users==null || users.size()!=knownUsersList.size()) {
             if(!(users==null && knownUsersList==null)) {
                 System.out.println("DEBUG: " + users.size() + " " + knownUsersList.size());
@@ -175,26 +181,50 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
 
 
         if (gameLogic.isGameWon()) {
-            guessCount.setText("You found the word!");
+
+           /* guessCount.setText("You found the word!");
             nooseImage.setImageResource(R.drawable.medal);
             confirmLetter.setText("Try again");
+            */
+
             currentUser.setCurrentStreak(currentUser.getCurrentStreak()+1);
             if(currentUser.getHighestStreak()<currentUser.getCurrentStreak()) {
                 currentUser.setHighestStreak(currentUser.getCurrentStreak());
             }
+            /*
             prepareRerun = true;
+            */
             asyncUpdateUser = new AsyncTaskUpdateUser();
             asyncUpdateUser.execute();
 
+            Intent gameWon = new Intent(this, GameWonActivity.class);
+            gameWon.putExtra("UserName", currentUser.getName());
+            gameWon.putExtra("Word", gameLogic.getWord());
+
+            this.finish();
+            startActivity(gameWon);
+
         } else if (gameLogic.isGameLost()) {
+
+            /*
             guessCount.setText("No pardons this time!");
             nooseImage.setImageResource(R.drawable.forkert6);
             hiddenWord.setText(gameLogic.getWord());
             confirmLetter.setText("Try again");
             prepareRerun = true;
+            */
             currentUser.setCurrentStreak(0);
+
             asyncUpdateUser = new AsyncTaskUpdateUser();
             asyncUpdateUser.execute();
+
+            Intent gameLost = new Intent(this, GameLostActivity.class);
+            gameLost.putExtra("UserName", currentUser.getName());
+            gameLost.putExtra("Word", gameLogic.getWord());
+
+            this.finish();
+            startActivity(gameLost);
+
         } else {
             guessCount.setText("Guesses remaining: " + gameLogic.getRemainingGuesses());
             nooseImage.setImageResource(nooseImages.get(gameLogic.getAmountWrongLetters()));
