@@ -1,6 +1,7 @@
 package com.example.hvalfisk.notsosuckyhangman;
 
 import android.content.Intent;
+import android.media.MediaPlayer;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -46,6 +47,8 @@ public class GameWonActivity extends AppCompatActivity implements View.OnClickLi
         confirmLetter.setOnClickListener(this);
         confirmLetter.setText("Try again");
 
+        final MediaPlayer mp = MediaPlayer.create(this, R.raw.winner_sound);
+        mp.start();
     }
 
     @Override

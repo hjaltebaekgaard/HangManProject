@@ -156,7 +156,8 @@ public class HangManLogic {
             replaceAll("&#229;", "å"). // erstat HTML-tegn
             replaceAll("[^a-zæøå]", " "). // fjern tegn der ikke er bogstaver
             replaceAll(" [a-zæøå] "," "). // fjern 1-bogstavsord
-            replaceAll(" [a-zæøå][a-zæøå] "," "); // fjern 2-bogstavsord
+            replaceAll(" [a-zæøå][a-zæøå] "," "). // fjern 2-bogstavsord
+            replaceAll("[bcdfghjklmnpqrstvxz]*"," "); //remove all words without vowels
 
     System.out.println("data = " + data);
     System.out.println("data = " + Arrays.asList(data.split("\\s+")));
