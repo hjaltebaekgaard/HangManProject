@@ -6,12 +6,15 @@ import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.ArraySet;
+import android.view.Gravity;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 
 import com.google.gson.Gson;
@@ -44,7 +47,7 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
     ArrayList<Integer> nooseImages;
     User currentUser;
     String userName;
-    boolean prepareRerun;
+    Toast toast;
 
 
     @SuppressLint("StaticFieldLeak")
@@ -61,7 +64,7 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
         infoText = findViewById(R.id.infoText);
         guessCount = findViewById(R.id.guessCount);
         nooseImage = findViewById(R.id.nooseImage);
-        prepareRerun = false;
+
 
         nooseImages = new ArrayList<Integer>();
         nooseImages.add(R.drawable.galge);
@@ -109,7 +112,8 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
                 super.onPostExecute(o);
 
                 infoText.setText("Welcome " + userName);
-                setConfirmButtonListener();
+                setOnClickListeners();
+                toast = Toast.makeText(GameActivity.this, null, Toast.LENGTH_SHORT);
 
                 hiddenWord.setText(gameLogic.getVisibleWord());
                 if(gameLogic.getUsedLetters().size()!=0) {
@@ -162,95 +166,97 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
 
     }
 
-    private void setConfirmButtonListener() {
+    private void setOnClickListeners() {
         confirmLetter.setOnClickListener(this);
+        nooseImage.setOnClickListener(this);
     }
 
     @Override
     public void onClick(View v) {
-
-        gameLogic.guessLetter(inputLetter.getText().toString());
-        inputLetter.setText("");
-        hiddenWord.setText(gameLogic.getVisibleWord());
-        infoText.setText(gameLogic.getUsedLettersString());
-
-        System.out.println("user array has size: "+users.size());
-
-        if(prepareRerun) {
-            reRun();
-
-        }
+        if(v.getId()==R.id.confirmLetter) {
+            Boolean changeNooseImage = gameLogic.guessLetter(inputLetter.getText().toString());
+            inputLetter.setText("");
+            hiddenWord.setText(gameLogic.getVisibleWord());
+            infoText.setText(gameLogic.getUsedLettersString());
 
 
-        if (gameLogic.isGameWon()) {
+            if (gameLogic.isGameWon()) {
 
-           /* guessCount.setText("You found the word!");
-            nooseImage.setImageResource(R.drawable.medal);
-            confirmLetter.setText("Try again");
-            */
+                currentUser.setCurrentStreak(currentUser.getCurrentStreak() + 1);
+                if (currentUser.getHighestStreak() < currentUser.getCurrentStreak()) {
+                    currentUser.setHighestStreak(currentUser.getCurrentStreak());
+                }
 
-            currentUser.setCurrentStreak(currentUser.getCurrentStreak()+1);
-            if(currentUser.getHighestStreak()<currentUser.getCurrentStreak()) {
-                currentUser.setHighestStreak(currentUser.getCurrentStreak());
+                asyncUpdateUser = new AsyncTaskUpdateUser();
+                asyncUpdateUser.execute();
+
+                Intent gameWon = new Intent(this, GameWonActivity.class);
+                Bundle winner = new Bundle();
+                winner.putString("UserName", currentUser.getName());
+                winner.putInt("CurrentStreak", currentUser.getCurrentStreak());
+                winner.putInt("HighestStreak", currentUser.getHighestStreak());
+
+                gameWon.putExtra("CurrentUser", winner);
+                gameWon.putExtra("Word", gameLogic.getWord());
+
+                this.finish();
+                startActivity(gameWon);
+
+            } else if (gameLogic.isGameLost()) {
+
+                currentUser.setCurrentStreak(0);
+
+                asyncUpdateUser = new AsyncTaskUpdateUser();
+                asyncUpdateUser.execute();
+
+                Intent gameLost = new Intent(this, GameLostActivity.class);
+                Bundle loser = new Bundle();
+                loser.putString("UserName", currentUser.getName());
+                loser.putInt("CurrentStreak", currentUser.getCurrentStreak());
+                loser.putInt("HighestStreak", currentUser.getHighestStreak());
+                gameLost.putExtra("CurrentUser", loser);
+                gameLost.putExtra("Word", gameLogic.getWord());
+
+                this.finish();
+                startActivity(gameLost);
+
+            } else {
+
+                if (changeNooseImage) {
+                    Animation fadeOut = AnimationUtils.loadAnimation(GameActivity.this, R.anim.fade_out);
+                    nooseImage.startAnimation(fadeOut);
+
+                    fadeOut.setAnimationListener(new Animation.AnimationListener() {
+                        @Override
+                        public void onAnimationStart(Animation animation) {
+                        }
+
+                        @Override
+                        public void onAnimationEnd(Animation animation) {
+                            Animation fadeOut = AnimationUtils.loadAnimation(GameActivity.this, R.anim.fade_in);
+                            nooseImage.setImageResource(nooseImages.get(gameLogic.getAmountWrongLetters()));
+                            nooseImage.startAnimation(fadeOut);
+                        }
+
+                        @Override
+                        public void onAnimationRepeat(Animation animation) {
+                        }
+                    });
+                    guessCount.setText("Guesses remaining: " + gameLogic.getRemainingGuesses());
+
+                }
             }
-            /*
-            prepareRerun = true;
-            */
-            asyncUpdateUser = new AsyncTaskUpdateUser();
-            asyncUpdateUser.execute();
 
-            Intent gameWon = new Intent(this, GameWonActivity.class);
-            Bundle winner = new Bundle();
-            winner.putString("UserName",currentUser.getName());
-            winner.putInt("CurrentStreak",currentUser.getCurrentStreak());
-            winner.putInt("HighestStreak",currentUser.getHighestStreak());
-
-            gameWon.putExtra("CurrentUser",winner);
-            gameWon.putExtra("Word", gameLogic.getWord());
-
-            this.finish();
-            startActivity(gameWon);
-
-        } else if (gameLogic.isGameLost()) {
-
-            /*
-            guessCount.setText("No pardons this time!");
-            nooseImage.setImageResource(R.drawable.forkert6);
-            hiddenWord.setText(gameLogic.getWord());
-            confirmLetter.setText("Try again");
-            prepareRerun = true;
-            */
-            currentUser.setCurrentStreak(0);
-
-            asyncUpdateUser = new AsyncTaskUpdateUser();
-            asyncUpdateUser.execute();
-
-            Intent gameLost = new Intent(this, GameLostActivity.class);
-            Bundle loser = new Bundle();
-            loser.putString("UserName",currentUser.getName());
-            loser.putInt("CurrentStreak",currentUser.getCurrentStreak());
-            loser.putInt("HighestStreak",currentUser.getHighestStreak());
-            gameLost.putExtra("CurrentUser",loser);
-            gameLost.putExtra("Word", gameLogic.getWord());
-
-            this.finish();
-            startActivity(gameLost);
-
-        } else {
-            guessCount.setText("Guesses remaining: " + gameLogic.getRemainingGuesses());
-            nooseImage.setImageResource(nooseImages.get(gameLogic.getAmountWrongLetters()));
         }
 
+        if(v.getId()==R.id.nooseImage) {
 
-    }
+            toast.setText("Stop it!!!");
+            toast.setGravity(Gravity.TOP|Gravity.LEFT,nooseImage.getLeft(),nooseImage.getTop());
+            toast.show();
 
-    private void reRun() {
-        gameLogic.reset();
-        hiddenWord.setText(gameLogic.getVisibleWord());
-        confirmLetter.setText(R.string.game_confirm_button);
-        infoText.setText(R.string.game_info_text_rerun);
-        guessCount.setText(R.string.clear);
-        prepareRerun = false;
+            nooseImage.startAnimation(AnimationUtils.loadAnimation(GameActivity.this, R.anim.tickle));
+        }
     }
 
     void loadUserData() {

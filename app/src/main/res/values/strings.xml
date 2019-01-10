@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">NotSoSuckyHangMan</string>
+    <string name="app_name">s175447 HangManLeftToDry</string>
     <string name="highscores_title">Highscores</string>
     <string name="highscore_player_name">Username</string>
     <string name="highscore_streak">Best winning streak</string>
@@ -17,4 +17,6 @@
     <string name="instruction_guessing">To guess a letter, type in a single lower case letter in the text field and click confirm. A list of letters you have used is shown and the hidden word will reveal itself as you guess letters.</string>
     <string name="instruction_winning">You win a round if you guess the words before the convict is fully drawn. The app tracks a users winning streak. The 10 users with the highest all time streak are visible in the highscore list.</string>
     <string name="instruction_header_winning">Winning the Game</string>
+    <string name="game_lost_info">You failed to guess the word!! Sadly the convict now hangs as a testement to your failure</string>
+    <string name="try_again">Try again</string>
 </resources>

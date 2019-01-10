@@ -27,7 +27,11 @@
         <activity android:name=".HighscoreActivity" />
         <activity android:name=".InstructionsActivity" />
         <activity android:name=".GameWonActivity" />
-        <activity android:name=".GameLostActivity"></activity>
+        <activity android:name=".GameLostActivity" />
+
+        <meta-data
+            android:name="com.google.android.actions"
+            android:resource="@anim/fade_in" />
     </application>
 
 </manifest>

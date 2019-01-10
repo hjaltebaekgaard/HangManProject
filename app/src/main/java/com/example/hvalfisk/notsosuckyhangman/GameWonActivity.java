@@ -45,7 +45,7 @@ public class GameWonActivity extends AppCompatActivity implements View.OnClickLi
         infoText.setText("Congratulations "+userName+"!! You guessed the word. One more convict goes free TADA!!");
 
         confirmLetter.setOnClickListener(this);
-        confirmLetter.setText("Try again");
+        confirmLetter.setText(R.string.try_again);
 
         final MediaPlayer mp = MediaPlayer.create(this, R.raw.winner_sound);
         mp.start();

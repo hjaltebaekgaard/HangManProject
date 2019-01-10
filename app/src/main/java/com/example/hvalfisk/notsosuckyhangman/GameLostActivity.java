@@ -40,10 +40,10 @@ public class GameLostActivity extends AppCompatActivity implements View.OnClickL
 
         gameOverImage.setImageResource(R.drawable.forkert6);
 
-        infoText.setText("You failed to guess the word!! Sadly the convict now hangs as a testement to your failure");
+        infoText.setText(R.string.game_lost_info);
 
         confirmLetter.setOnClickListener(this);
-        confirmLetter.setText("Try again");
+        confirmLetter.setText(R.string.try_again);
 
         final MediaPlayer mp = MediaPlayer.create(this, R.raw.loser_sound);
         mp.start();

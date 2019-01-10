@@ -10,7 +10,7 @@ import java.util.HashSet;
 import java.util.Random;
 
 public class HangManLogic {
-  /** AHT afprøvning er possibleWords synlig på pakkeniveau */
+
   ArrayList<String> possibleWords = new ArrayList<String>();
   private String word;
   private ArrayList<String> usedLetters = new ArrayList<String>();
@@ -94,17 +94,19 @@ public class HangManLogic {
     }
   }
 
-  public void guessLetter(String letter) {
-    if (letter.length() != 1) return;
+  public boolean guessLetter(String letter) {
+    if (letter.length() != 1) return false;
     System.out.println("Der gættes på bogstavet: " + letter);
-    if (usedLetters.contains(letter)) return;
-    if (gameWon || gameLost) return;
+    if (usedLetters.contains(letter)) return false;
+    if (gameWon || gameLost) return false;
 
     usedLetters.add(letter);
 
     if (word.contains(letter)) {
       letterContained = true;
       System.out.println("Bogstavet var korrekt: " + letter);
+      updateVisibleWord();
+      return false;
     } else {
       // Vi gættede på et bogstav der ikke var i word.
       letterContained = false;
@@ -113,8 +115,10 @@ public class HangManLogic {
       if (amountWrongLetters > 5) {
         gameLost = true;
       }
+      updateVisibleWord();
+      return true;
     }
-    updateVisibleWord();
+
   }
 
   public void logStatus() {
@@ -155,9 +159,9 @@ public class HangManLogic {
             replaceAll("&oslash;", "ø"). // erstat HTML-tegn
             replaceAll("&#229;", "å"). // erstat HTML-tegn
             replaceAll("[^a-zæøå]", " "). // fjern tegn der ikke er bogstaver
+            replaceAll(" [bcdfghjklmnpqrstvxz]+ "," "). //remove all words without vowels
             replaceAll(" [a-zæøå] "," "). // fjern 1-bogstavsord
-            replaceAll(" [a-zæøå][a-zæøå] "," "). // fjern 2-bogstavsord
-            replaceAll("[bcdfghjklmnpqrstvxz]*"," "); //remove all words without vowels
+            replaceAll(" [a-zæøå][a-zæøå] "," "); // fjern 2-bogstavsord
 
     System.out.println("data = " + data);
     System.out.println("data = " + Arrays.asList(data.split("\\s+")));

@@ -5,6 +5,7 @@
     android:id="@+id/gallowProgress"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:focusableInTouchMode="true"
     tools:context=".GameActivity">
 
     <ImageView
@@ -55,7 +56,7 @@
         app:layout_constraintEnd_toStartOf="@+id/confirmLetter"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@+id/confirmLetter"
-        android:autofillHints="" />
+        />
 
     <Button
         android:id="@+id/confirmLetter"
