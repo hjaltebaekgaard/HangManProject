@@ -11,4 +11,10 @@
     <string name="game_guesses_remaining">Guesses remaining</string>
     <string name="clear" />
     <string name="game_info_text_rerun">Next convict awaits!</string>
+    <string name="instruction_words">The app collects a list of words from DR.dk and picks one at random for the player to guess.</string>
+    <string name="instruction_header_words">Selection of Words</string>
+    <string name="instruction_header_guessing">Guess Letters</string>
+    <string name="instruction_guessing">To guess a letter, type in a single lower case letter in the text field and click confirm. A list of letters you have used is shown and the hidden word will reveal itself as you guess letters.</string>
+    <string name="instruction_winning">You win a round if you guess the words before the convict is fully drawn. The app tracks a users winning streak. The 10 users with the highest all time streak are visible in the highscore list.</string>
+    <string name="instruction_header_winning">Winning the Game</string>
 </resources>

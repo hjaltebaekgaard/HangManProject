@@ -6,4 +6,37 @@
     android:layout_height="match_parent"
     tools:context=".InstructionsActivity">
 
+    <include
+        android:id="@+id/instructionWords"
+        layout="@layout/instruction_element"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        app:layout_constraintBottom_toTopOf="@id/instructionGuessing"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <include
+        android:id="@+id/instructionGuessing"
+        layout="@layout/instruction_element"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toTopOf="@id/instructionWinning"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/instructionWords" />
+
+    <include
+        android:id="@+id/instructionWinning"
+        layout="@layout/instruction_element"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/instructionGuessing" />
+
+
 </android.support.constraint.ConstraintLayout>
