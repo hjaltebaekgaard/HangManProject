@@ -51,4 +51,11 @@ public class HangManApplication extends Application {
         }
 
     }
+
+    public User getUser(String userName) {
+
+
+
+        return null;
+    }
 }

@@ -1,5 +1,6 @@
 package com.example.hvalfisk.notsosuckyhangman;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
@@ -46,6 +47,7 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
     boolean prepareRerun;
 
 
+    @SuppressLint("StaticFieldLeak")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -198,7 +200,12 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
             asyncUpdateUser.execute();
 
             Intent gameWon = new Intent(this, GameWonActivity.class);
-            gameWon.putExtra("UserName", currentUser.getName());
+            Bundle winner = new Bundle();
+            winner.putString("UserName",currentUser.getName());
+            winner.putInt("CurrentStreak",currentUser.getCurrentStreak());
+            winner.putInt("HighestStreak",currentUser.getHighestStreak());
+
+            gameWon.putExtra("CurrentUser",winner);
             gameWon.putExtra("Word", gameLogic.getWord());
 
             this.finish();
@@ -219,7 +226,11 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
             asyncUpdateUser.execute();
 
             Intent gameLost = new Intent(this, GameLostActivity.class);
-            gameLost.putExtra("UserName", currentUser.getName());
+            Bundle loser = new Bundle();
+            loser.putString("UserName",currentUser.getName());
+            loser.putInt("CurrentStreak",currentUser.getCurrentStreak());
+            loser.putInt("HighestStreak",currentUser.getHighestStreak());
+            gameLost.putExtra("CurrentUser",loser);
             gameLost.putExtra("Word", gameLogic.getWord());
 
             this.finish();
